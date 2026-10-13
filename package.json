@@ -1,0 +1,7 @@
+{
+  "name": "paperfomo",
+  "version": "1.0.0",
+  "description": "Virtual-money meme coin practice app with live DEX Screener and GeckoTerminal data",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

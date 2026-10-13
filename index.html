@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PaperFomo – Discover and Practice Trade</title>
+<style>
+:root{color-scheme:dark;--bg:#000;--sf:#0e0e11;--sf2:#16161a;--ln:#222228;--tx:#f4f4f5;--mu:#8d8d97;--up:#22d27a;--dn:#ff4d5e;--wn:#f5b73d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{max-width:620px;margin:0 auto;padding-bottom:84px}
+.ban{margin:10px 14px 0;padding:9px 12px;border:1px solid var(--ln);background:var(--sf);border-radius:12px;font-size:12.5px;color:var(--mu);line-height:1.4}
+.ban b{color:var(--wn);font-weight:600}
+h1{font-size:22px;margin:14px 14px 0;letter-spacing:-.4px}
+.pad{padding:10px 14px}
+.search{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 14px;color:var(--tx);font:inherit;font-size:15px;margin:8px 0}
+.search:focus{outline:2px solid var(--up);outline-offset:1px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0;scrollbar-width:none}
+.chip{flex:none;background:var(--sf);color:var(--mu);border:1px solid var(--ln);border-radius:999px;padding:7px 12px;font:600 13px inherit;cursor:pointer;transition:.15s}
+.chip.on{background:var(--tx);color:#000;border-color:var(--tx)}
+.row{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--ln);background:var(--sf);border-radius:16px;margin:8px 0;cursor:pointer;transition:.15s}
+.row:active{background:var(--sf2)}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#000;flex:none}
+.g{flex:1;min-width:0}.nm{font-weight:600;font-size:15px}.big{font-size:19px}
+.sy{color:var(--mu);font-weight:500;font-size:13px;margin-left:4px}
+.tg{font-size:10.5px;border:1px solid var(--ln);border-radius:6px;padding:1px 5px;margin-left:6px;color:var(--mu);font-weight:500}
+.mu{color:var(--mu);font-size:12.5px;margin-top:2px}
+.r{text-align:right;white-space:nowrap}.up{color:var(--up)}.dn{color:var(--dn)}.warn{color:var(--wn)}
+nav{position:fixed;left:0;right:0;bottom:0;max-width:620px;margin:0 auto;display:flex;background:rgba(10,10,12,.96);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;color:var(--mu);font:600 11.5px inherit;padding:10px 0 9px;cursor:pointer}
+nav button.on{color:var(--up)}nav span{display:block;font-size:19px;margin-bottom:2px}
+button:focus-visible{outline:2px solid var(--up);outline-offset:2px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center;z-index:5}
+.sheet.open{display:flex}
+.panel{background:var(--bg);border:1px solid var(--ln);width:100%;max-width:620px;max-height:94%;overflow:auto;border-radius:22px 22px 0 0;padding:16px 14px calc(20px + env(safe-area-inset-bottom,0px))}
+.x{float:right;background:var(--sf2);color:var(--tx);border:0;border-radius:50%;width:34px;height:34px;font-size:15px;cursor:pointer}
+.hd{display:flex;gap:12px;align-items:center}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin:10px 0}
+.sec{font-weight:700;margin:16px 0 4px;font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+td{padding:7px 0;border-bottom:1px solid var(--ln);vertical-align:top}td:last-child{text-align:right;word-break:break-all}
+tr:last-child td{border:0}td:first-child{color:var(--mu);padding-right:10px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.btn{border:0;border-radius:12px;padding:13px 8px;font:700 14.5px inherit;cursor:pointer;background:var(--sf2);color:var(--tx)}
+.btn.b{background:var(--up);color:#00170b}.btn.s{background:var(--dn);color:#1c0006}.btn:disabled{opacity:.35;cursor:default}
+.amt{display:flex;gap:8px;margin:8px 0}.amt input{flex:1;min-width:0}
+.flag{font-size:13px;padding:8px 10px;border-radius:10px;margin:6px 0;border:1px solid var(--ln);background:var(--sf2)}
+.flag.r{border-color:#5a1d27;color:#ffb3bc;text-align:left}.flag.y{border-color:#5a4513;color:#ffdb9a}
+svg.ch{width:100%;height:120px;display:block;margin:8px 0}
+.lnk{color:var(--up);text-decoration:none;font-weight:600;font-size:14px}
+.cp{background:var(--sf2);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:3px 8px;font:600 12px inherit;cursor:pointer;margin-left:6px}
+#toast{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));max-width:596px;margin:0 auto;background:#fff;color:#000;border-radius:12px;padding:12px 14px;font-size:14px;z-index:9;display:none}
+.link{background:none;border:0;color:var(--dn);font:600 14px inherit;cursor:pointer;padding:12px 0;text-decoration:underline}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.empty{color:var(--mu);text-align:center;padding:26px 8px;font-size:14px}
+.big2{font-size:34px;font-weight:800;letter-spacing:-1px}
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main id="main"></main>
+<div id="toast" role="status"></div>
+<nav aria-label="Main">
+  <button data-tab="disc"><span>🔎</span>Discover</button>
+  <button data-tab="trend"><span>🔥</span>Trending</button>
+  <button data-tab="new"><span>✨</span>New Pairs</button>
+  <button data-tab="port"><span>💼</span>Portfolio</button>
+  <button data-tab="prof"><span>👤</span>Profile</button>
+</nav>
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+
+<script>
+/* Live market data: everything below comes from server.js (DEX Screener + GeckoTerminal). Nothing is hardcoded or simulated. */
+const FEE=0.005, W=['m5','h1','h6','h24'], STALE=90e3, MAXAGE=120e3;
+const CN={solana:'Solana',base:'Base',ethereum:'Ethereum'};
+let T=[],KEY={},FEED={at:0,ok:false,err:null,loading:true,chains:['solana']},LIM=40;
+const nk=(c,a)=>c+':'+a;
+function merge(list){for(const x of list||[]){if(!x)continue;x.stub=false;const k=nk(x.chain,x.id);if(KEY[k]!=null)Object.assign(T[KEY[k]],x);else{x.i=T.length;KEY[k]=x.i;T.push(x)}}}
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let tab='disc',Q='',CH='all',SORT='trend',ML=10000,OPEN=null,S;
+const DEF=()=>({cash:10000,pos:{},hist:[],trades:[],watch:[],real:0,meta:{}});
+function load(){try{const j=localStorage.getItem('pflive2');return j?JSON.parse(j):null}catch(e){return null}}
+function save(){try{localStorage.setItem('pflive2',JSON.stringify(S))}catch(e){}}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3800)}
+
+/* formatting */
+function usd(n){if(n==null)return '—';const a=Math.abs(n);if(a>=1e9)return '$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(a>=1e4)return '$'+(n/1e3).toFixed(1)+'K';return '$'+n.toLocaleString(undefined,{maximumFractionDigits:2})}
+function P(p){if(p==null)return '—';if(p>=1)return '$'+p.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});return '$'+Number(p.toPrecision(3)).toString()}
+function money(n){return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct(n){return n==null?'—':(n>=0?'+':'')+n.toFixed(2)+'%'}
+function cl(n){return n==null?'mu':n>=0?'up':'dn'}
+function age(ms){if(ms==null)return 'unknown';const s=Math.max(0,(Date.now()-ms)/1000);if(s<3600)return Math.max(1,Math.round(s/60))+'m';if(s<86400)return (s/3600).toFixed(1)+'h';if(s<86400*365)return Math.round(s/86400)+'d';return (s/86400/365).toFixed(1)+'y'}
+function ago(ms){if(!ms)return 'never';const s=Math.round((Date.now()-ms)/1000);return s<90?s+'s ago':Math.round(s/60)+'m ago'}
+function col(t){let h=0;for(const c of t.id)h=(h*31+c.charCodeAt(0))>>>0;return 'hsl('+(h%360)+',70%,62%)'}
+
+/* data helpers */
+const cur=t=>t.price;
+const fresh=t=>t.price!=null&&t.pt&&Date.now()-t.pt<MAXAGE;
+const chg=(t,w)=>t.ch[W.indexOf(w)], vol=(t,w)=>t.v[W.indexOf(w)], txs=(t,w)=>t.tx[W.indexOf(w)];
+const prim=t=>{const a=chg(t,'h1');return a!=null?a:chg(t,'h24')};
+function flags(t){
+  const f=[];
+  if(t.price==null||!t.pt)f.push(['r','Market data is unavailable for this token right now.']);
+  else if(Date.now()-t.pt>STALE)f.push(['y','This price is out of date ('+ago(t.pt)+'). Orders are paused until it refreshes.']);
+  if(t.liq==null)f.push(['r','Provider returned no liquidity data. You cannot tell how easily this could be sold.']);
+  else if(t.liq>=0.9*t.fdv)f.push(['r','Reported liquidity is almost equal to FDV with very few trades. That is unreliable and a common sign of a fake pool.']);
+  else if(t.liq<10000)f.push(['y','Very low liquidity (under $10K). Small trades move the price a lot.']);
+  if(t.created!=null&&Date.now()-t.created<3600e3)f.push(['y','Brand-new pair (under 1 hour old). Nothing is known about it yet.']);
+  if(new Set(t.ch).size==1&&t.ch[0]!=null)f.push(['y','All time windows show the same numbers because the pair is only minutes old.']);
+  const dup=T.filter(o=>o.name.toLowerCase()==t.name.toLowerCase()&&o.id!=t.id).length;
+  if(dup)f.push(['y','Same name as '+dup+' other token'+(dup>1?'s':'')+' here. Only one contract can be the real one, so check the address.']);
+  if(/^(sol|solana|ethereum|bitcoin|usd coin|tether|wrapped sol|wrapped bitcoin)$/i.test(t.name)||/^(sol|eth|btc|usdc|usdt)$/i.test(t.sym))f.push(['y','Name or symbol copies a major asset (SOL, ETH, BTC, USDC). Many tokens imitate big names. Compare the contract address with the official one.']);
+  const n=txs(t,'h24');if(n[0]+n[1]<20)f.push(['y','Fewer than 20 trades in 24 hours.']);
+  return f;
+}
+function why(t){
+  if(!fresh(t))return 'Price stale or unavailable';
+  if(t.liq==null)return 'No liquidity data';
+  if(t.liq>=0.9*t.fdv)return 'Liquidity ≈ FDV (unreliable)';
+  if(t.liq<ML)return 'Liquidity under '+usd(ML);
+  const n=txs(t,'h24');if(n[0]+n[1]<20)return 'Under 20 trades in 24h';
+  return null;
+}
+function score(){
+  const L=T.filter(t=>!why(t));
+  const f=g=>{const v=L.map(g),mn=Math.min(...v),mx=Math.max(...v);return v.map(x=>mx==mn?.5:(x-mn)/(mx-mn))};
+  const a=f(t=>Math.log10(1+vol(t,'h24'))),b=f(t=>Math.log10(1+txs(t,'h24')[0]+txs(t,'h24')[1])),c=f(t=>Math.log10(1+t.liq)),d=f(t=>Math.max(-10,Math.min(25,prim(t)||0)));
+  T.forEach(t=>t.score=null);
+  L.forEach((t,i)=>t.score=Math.round(100*(.3*a[i]+.25*b[i]+.2*c[i]+.25*d[i])));
+}
+function filt(list){return list.filter(t=>(CH=='all'||t.chain==CH)&&(!Q||(t.name+' '+t.sym+' '+t.id).toLowerCase().includes(Q.toLowerCase())))}
+function worth(){let w=S.cash;for(const id in S.pos){const t=T.find(x=>x.id==id);if(t)w+=S.pos[id].qty*cur(t)}return w}
+
+/* views */
+function chips(o,sel,at){return '<div class="chips">'+o.map(([k,l])=>`<button class="chip ${String(k)==String(sel)?'on':''}" data-${at}="${k}">${l}</button>`).join('')+'</div>'}
+const chipList=()=>[['all','All chains']].concat((FEED.chains||['solana']).map(k=>[k,CN[k]||k]));
+function pg(L,fn){return L.slice(0,LIM).map(fn).join('')+(L.length>LIM?`<button class="btn" style="width:100%;margin-top:8px" data-more>Show more (${L.length-LIM})</button>`:'')}
+function row(t,ex){
+  const c=prim(t),f=flags(t),w=chg(t,'h1')!=null?'1h':'24h';
+  return `<div class="row" data-o="${t.i}" tabindex="0" role="button"><div class="av" style="background:${col(t)}">${esc(t.name[0])}</div><div class="g"><div class="nm">${esc(t.name)}<span class="sy">${esc(t.sym)}</span><span class="tg">${CN[t.chain]}</span></div><div class="mu">${ex}${f.length?` · <span class="warn">⚠ ${f.length}</span>`:''}</div></div><div class="r"><div class="nm">${P(cur(t))}</div><div class="${cl(c)}" style="font-size:13px">${pct(c)} <span class="mu">${w}</span></div></div></div>`;
+}
+function banner(){$('#top').innerHTML='<h1>PaperFomo</h1><div class="ban" id="stat"></div>';stat()}
+function stat(){
+  const el=$('#stat');if(!el)return;let h;
+  if(FEED.loading&&!FEED.at)h='Loading live market data…';
+  else if(!FEED.at)h=`<b>No live data.</b> ${esc(FEED.err||'Could not reach the data server.')} No prices are shown until this works. <button class="chip" data-retry>Retry</button>`;
+  else if(!FEED.ok||Date.now()-FEED.at>STALE)h=`<b>Data may be out of date.</b> Last good update ${ago(FEED.at)}${FEED.err?' ('+esc(FEED.err)+')':''}. Orders are paused for stale prices. <button class="chip" data-retry>Retry</button>`;
+  else h=`<span class="up">●</span> Live from DEX Screener and GeckoTerminal · updated ${ago(FEED.at)}${FEED.err?' · '+esc(FEED.err):''}. All trades use fake money.`;
+  el.innerHTML=h}
+function controls(){
+  let h='<div class="pad">';
+  if(tab=='disc')h+='<div class="sec" style="margin-top:4px">Discover</div>';
+  if(tab=='trend')h+='<div class="sec" style="margin-top:4px">Trending</div>';
+  if(tab=='new')h+='<div class="sec" style="margin-top:4px">New pairs</div>';
+  h+=`<input class="search" id="q" placeholder="Search name, symbol, or address" value="${esc(Q)}" aria-label="Search">`+chips(chipList(),CH,'ch');
+  if(tab=='trend')h+=chips([['trend','Trending'],['gain','Gainers'],['lose','Losers'],['vol','Volume'],['new','Newest']],SORT,'sort')+chips([[1000,'Liq $1K+'],[10000,'Liq $10K+'],[100000,'Liq $100K+']],ML,'ml');
+  h+='<div id="list"></div></div>';return h;
+}
+function list(){
+  const el=$('#list');if(!el)return;let h='';
+  if(tab=='disc'){
+    const L=filt(T).sort((a,b)=>vol(b,'h24')-vol(a,'h24'));
+    h=L.length?pg(L,t=>row(t,`Vol ${usd(vol(t,'h24'))} · Liq ${usd(t.liq)}`)):empty();
+  }else if(tab=='trend'){
+    score();
+    const all=filt(T);let L=all.filter(t=>!why(t));
+    if(SORT=='new'){L=all.filter(t=>t.created!=null).sort((a,b)=>b.created-a.created)}
+    else if(SORT=='gain')L.sort((a,b)=>(prim(b)??-999)-(prim(a)??-999));
+    else if(SORT=='lose')L.sort((a,b)=>(prim(a)??999)-(prim(b)??999));
+    else if(SORT=='vol')L.sort((a,b)=>vol(b,'h24')-vol(a,'h24'));
+    else L.sort((a,b)=>b.score-a.score);
+    h=`<div class="card mu" style="font-size:12.5px"><b style="color:var(--tx)">This app's own ranking.</b> Not a provider ranking, and paid boosts are never used. Score = 30% volume + 25% trade count + 20% liquidity + 25% 1-hour move, each scaled 0 to 1 across eligible tokens (volume, trades and liquidity on a log scale, move capped at -10% to +25%). Tokens with missing, tiny, or unreliable liquidity are left out.</div>`;
+    h+=L.length?pg(L,t=>row(t,(t.score!=null?`Score ${t.score} · `:'')+`Vol ${usd(vol(t,'h24'))} · Liq ${usd(t.liq)}`)):empty();
+    const ex=SORT=='new'?[]:all.filter(t=>why(t));
+    if(ex.length)h+='<div class="sec">Not ranked</div>'+ex.map(t=>`<div class="flag" data-o="${t.i}" style="cursor:pointer">${esc(t.name)} on ${CN[t.chain]}: ${why(t)}</div>`).join('');
+  }else if(tab=='new'){
+    const L=filt(T.filter(t=>t.created!=null)).sort((a,b)=>b.created-a.created);
+    h=L.length?pg(L,t=>row(t,`Age ${age(t.created)} · Vol ${usd(vol(t,'h24'))} · Liq ${usd(t.liq)}`)):empty();
+    h+='<p class="mu" style="margin-top:14px">Pair times are the creation timestamps reported by the data providers. A new pair is not a safe or legit token. Check the warnings on each one.</p>';
+  }else if(tab=='port'){
+    const w=worth(),pl=w-10000;let unr=0;const ids=Object.keys(S.pos);
+    h=`<div class="sec" style="margin-top:4px">Portfolio</div><div class="big2">${money(w)}</div><div class="${cl(pl)}">${money(pl)} (${pct(pl/100)}) all time</div>`+
+    perfChart()+
+    `<div class="card"><table><tr><td>Cash</td><td>${money(S.cash)}</td></tr>`;
+    ids.forEach(id=>{const t=T.find(x=>x.id==id);unr+=S.pos[id].qty*cur(t)-S.pos[id].cost});
+    h+=`<tr><td>Unrealized P&amp;L</td><td class="${cl(unr)}">${money(unr)}</td></tr><tr><td>Realized P&amp;L</td><td class="${cl(S.real)}">${money(S.real)}</td></tr></table></div>`;
+    h+='<div class="sec">Holdings</div>'+(ids.length?ids.map(id=>{const t=T.find(x=>x.id==id),p=S.pos[id],v=p.qty*cur(t),g=v-p.cost;return row(t,`${money(v)} · avg entry ${P(p.cost/p.qty)} · <span class="${cl(g)}">${money(g)}</span>`)}).join(''):'<div class="empty">No holdings yet. Open a token and place a practice buy.</div>');
+    h+='<div class="sec">Watchlist</div>'+(S.watch.length?S.watch.map(id=>row(T.find(x=>x.id==id),'Tap to open')).join(''):'<div class="empty">Tap ☆ on a token to watch it.</div>');
+  }else{
+    h=`<div class="sec" style="margin-top:4px">Profile</div>
+    <div class="card mu" style="font-size:13px"><b style="color:var(--tx)">How trades work</b><br>You start with $10,000 of virtual cash. Buys and sells use the latest real market price from the last refresh plus an <b>estimated</b> slippage based on the pool's reported liquidity (5% assumed when none is reported) and a simulated 0.5% fee. Nothing here touches a wallet or a blockchain.</div>
+    <div class="sec">Trade history</div>`+(S.trades.length?S.trades.slice(0,40).map(x=>`<div class="card" style="font-size:13px"><b class="${x.side=='buy'?'up':'dn'}">${x.side.toUpperCase()}</b> ${esc(x.name)} · ${money(x.amt)}<div class="mu">at ${P(x.exec)} · est. slippage ${(x.imp*100).toFixed(2)}% · fee ${money(x.fee)} · ${new Date(x.ts).toLocaleString()}${x.side=='sell'?` · realized ${money(x.rl)}`:''}</div></div>`).join(''):'<div class="empty">No trades yet.</div>')+
+    `<div style="text-align:center"><button class="link" data-reset>Reset portfolio to $10,000</button></div>
+    <div class="card mu" style="font-size:12.5px"><b style="color:var(--tx)">About the data</b><br>Token addresses, prices, liquidity, volume, trades and pair times come from DEX Screener. New pools and price history come from GeckoTerminal. Both are fetched and cached by this app's own server. Market cap and FDV are provider-reported and not verified. Stats don't prove a token is safe. There are no accounts yet, so progress is saved only in this browser.</div>`;
+  }
+  el.innerHTML=h;
+}
+function empty(){
+  if(!T.length)return `<div class="empty">${FEED.loading?'Loading live tokens…':'No live data yet. '+esc(FEED.err||'')}</div>`;
+  const a=/^(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})$/.test(Q.trim());
+  return '<div class="empty">No tokens match. Clear the search or pick All chains.'+(a?`<div style="margin-top:12px"><button class="btn b" data-look>Look up this address on ${CN[CH=='all'?'solana':CH]||CH}</button></div>`:'')+'</div>'}
+function perfChart(){
+  const h=S.hist;if(h.length<2)return '<div class="mu" style="margin:10px 0">Your performance chart fills in as time passes.</div>';
+  const v=h.map(x=>x.v),mn=Math.min(...v,10000),mx=Math.max(...v,10000),R=mx-mn||1;
+  const pts=v.map((y,i)=>`${(i/(v.length-1)*300).toFixed(1)},${(95-(y-mn)/R*90).toFixed(1)}`).join(' ');
+  const up=v[v.length-1]>=10000;
+  return `<svg class="ch" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Portfolio value over time"><line x1="0" x2="300" y1="${(95-(10000-mn)/R*90).toFixed(1)}" y2="${(95-(10000-mn)/R*90).toFixed(1)}" stroke="#333" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><polyline points="${pts}" fill="none" stroke="${up?'var(--up)':'var(--dn)'}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function render(){
+  LIM=40;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab==tab));
+  banner();
+  $('#main').innerHTML=(tab=='port'||tab=='prof')?'<div class="pad"><div id="list"></div></div>':controls();
+  list();
+}
+
+/* token sheet */
+function est(t,amt){const imp=t.liq!=null?amt/(t.liq/2+amt):0.05;return{imp:Math.min(imp,.5),fee:amt*FEE}}
+function openSheet(i){
+  OPEN=i;const t=T[i],f=flags(t),n24=txs(t,'h24');
+  const rows=[['Price (real)',P(t.price)+' · '+ago(t.pt)],['FDV',usd(t.fdv)+' (provider-reported)'],['Market cap',usd(t.mc)+' (provider-reported, unverified)'],['Liquidity',usd(t.liq)]].concat(
+   W.map((w,k)=>['Volume '+w,usd(t.v[k])]),W.map((w,k)=>['Buys / sells '+w,t.tx[k][0]+' / '+t.tx[k][1]]),W.map((w,k)=>['Change '+w,pct(t.ch[k])]),
+   [['Pair created',t.created?new Date(t.created).toUTCString().replace(' GMT',' UTC'):'not provided'],['Token age',age(t.created)],['Found via',esc((t.src||[]).join(', ')||'saved')],['Pair address',esc(t.pair)]]);
+  $('#panel').innerHTML=`<button class="x" data-x aria-label="Close">✕</button>
+  <div class="hd"><div class="av" style="background:${col(t)}">${esc(t.name[0])}</div><div><div class="nm big">${esc(t.name)}<span class="sy">${esc(t.sym)}</span></div><div class="mu">${CN[t.chain]} · ${esc(t.dex)}</div></div></div>
+  <div id="sl"></div>
+  <div class="card"><b>Practice order</b> <span class="mu">(simulated, fake money)</span>
+   <div class="grid">${[100,500,1000].map(a=>`<button class="btn b" data-buy="${a}">Buy $${a}</button>`).join('')}</div>
+   <div class="amt"><input class="search" id="amt" inputmode="decimal" placeholder="Custom $ amount" style="margin:0" aria-label="Custom amount"><button class="btn b" data-buy="custom">Buy</button></div>
+   <div class="mu" id="est" style="margin-bottom:8px"></div>
+   <div class="grid">${[25,50,100].map(a=>`<button class="btn s" data-sell="${a}">Sell ${a}%</button>`).join('')}</div></div>
+  <div class="sec">Warnings</div>${f.length?f.map(x=>`<div class="flag ${x[0]}">${x[0]=='r'?'🚩':'⚠️'} ${x[1]}</div>`).join(''):'<div class="mu">None triggered. That does not mean it is safe.</div>'}
+  <div class="sec">Contract address</div><div class="card" style="word-break:break-all;font-size:13px">${esc(t.id)}<button class="cp" data-copy="${esc(t.id)}">Copy</button></div>
+  <div class="sec">Market data</div><div class="card"><table>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div>
+  <a class="lnk" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">View on DEX Screener ↗</a>`;
+  $('#sheet').classList.add('open');live();updEst();loadHist(t);
+}
+function live(){
+  if(OPEN==null)return;const t=T[OPEN],p=S.pos[t.id],c=cur(t),star=S.watch.includes(t.id);
+  let svg=chartHtml(t);
+  let hold='';if(p){const v=p.qty*c,g=v-p.cost;hold=`<div class="card">You hold <b>${money(v)}</b> · avg entry ${P(p.cost/p.qty)}<br><span class="${cl(g)}">Unrealized ${money(g)} (${pct(g/p.cost*100)})</span></div>`}
+  $('#sl').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><div><div class="big2" style="font-size:30px">${P(c)}</div><div class="${cl(prim(t))}">${pct(prim(t))} <span class="mu">${chg(t,'h1')!=null?'1h':'24h'} (provider)</span></div>${fresh(t)?'':`<div class="warn" style="font-size:13px">Price ${t.price==null?'unavailable':'out of date ('+ago(t.pt)+')'}. Orders paused.</div>`}</div><button class="chip ${star?'on':''}" data-star>${star?'★ Watching':'☆ Watch'}</button></div>${svg}${hold}`;
+}
+function updEst(){
+  if(OPEN==null)return;const t=T[OPEN],a=parseFloat($('#amt').value);
+  if(!(a>0)){$('#est').textContent='Estimated slippage and a 0.5% fee are applied to every order. Cash: '+money(S.cash);return}
+  const e=est(t,a),q=(a-e.fee)/(cur(t)*(1+e.imp));
+  $('#est').textContent=`Est. slippage ${(e.imp*100).toFixed(2)}%${t.liq==null?' (assumed, no liquidity data)':''} · fee ${money(e.fee)} · you get about ${q.toPrecision(4)} ${t.sym}`;
+}
+function buy(amt){
+  const t=T[OPEN];if(!fresh(t)){toast('Live price is unavailable or out of date. Try again after it refreshes.');return}
+  if(!(amt>=1)){toast('Enter an amount of at least $1.');return}
+  if(amt>S.cash+1e-9){toast('Not enough virtual cash. You have '+money(S.cash)+'.');return}
+  const e=est(t,amt),exec=cur(t)*(1+e.imp),q=(amt-e.fee)/exec,p=S.pos[t.id]||{qty:0,cost:0};
+  p.qty+=q;p.cost+=amt;S.pos[t.id]=p;S.cash-=amt;setMeta(t);
+  S.trades.unshift({ts:Date.now(),side:'buy',id:t.id,name:t.name,amt,exec,imp:e.imp,fee:e.fee});
+  save();live();updEst();toast('Bought '+money(amt)+' of '+t.name+' (simulated)');
+}
+function sell(pc){
+  const t=T[OPEN],p=S.pos[t.id];if(!p){toast('You do not hold this token.');return}
+  if(!fresh(t)){toast('Live price is unavailable or out of date. Try again after it refreshes.');return}
+  const q=p.qty*pc/100,gross=q*cur(t),imp=Math.min(t.liq!=null?gross/(t.liq/2+gross):.05,.5),fee=gross*FEE,net=gross*(1-imp)-fee,cost=p.cost*pc/100,rl=net-cost;
+  S.cash+=net;S.real+=rl;p.qty-=q;p.cost-=cost;if(pc==100||p.qty<1e-12)delete S.pos[t.id];
+  S.trades.unshift({ts:Date.now(),side:'sell',id:t.id,name:t.name,amt:net,exec:cur(t)*(1-imp),imp,fee,rl});
+  save();live();updEst();toast('Sold '+pc+'% of '+t.name+' (simulated)');
+}
+function closeSheet(){OPEN=null;$('#sheet').classList.remove('open');if(tab=='port'||tab=='prof')list()}
+
+/* events */
+document.addEventListener('click',e=>{
+  const g=a=>e.target.closest('['+a+']');let n;
+  if(e.target.id=='sheet')return closeSheet();
+  if(g('data-x'))return closeSheet();
+  if(n=g('data-tab')){tab=n.dataset.tab;Q='';render();window.scrollTo(0,0);return}
+  if(n=g('data-ch')){CH=n.dataset.ch;render();return}
+  if(n=g('data-sort')){SORT=n.dataset.sort;render();return}
+  if(n=g('data-ml')){ML=+n.dataset.ml;render();return}
+  if(n=g('data-buy')){const v=n.dataset.buy;buy(v=='custom'?parseFloat($('#amt').value):+v);return}
+  if(n=g('data-sell'))return sell(+n.dataset.sell);
+  if(g('data-star')){const id=T[OPEN].id,k=S.watch.indexOf(id);if(k>=0)S.watch.splice(k,1);else{S.watch.push(id);setMeta(T[OPEN])}save();live();return}
+  if(n=g('data-copy')){try{navigator.clipboard.writeText(n.dataset.copy).then(()=>toast('Address copied'),()=>toast('Copy failed. Select the address to copy it.'))}catch(x){toast('Copy failed. Select the address to copy it.')}return}
+  if(g('data-retry')){refreshFeed();refreshPrices();return}
+  if(g('data-more')){LIM+=40;list();return}
+  if(g('data-look'))return look();
+  if(g('data-reset')){if(confirm('Reset your portfolio and trade history? You will start over with $10,000.')){S=DEF();save();render()}return}
+  if(n=g('data-o'))return openSheet(+n.dataset.o);
+});
+document.addEventListener('input',e=>{if(e.target.id=='q'){Q=e.target.value;LIM=40;list()}if(e.target.id=='amt')updEst()});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.dataset&&e.target.dataset.o!=null)openSheet(+e.target.dataset.o);if(e.key=='Escape'&&OPEN!=null)closeSheet()});
+
+/* live data: polling, caching is done by the server */
+async function api(path){const r=await fetch(path);let j=null;try{j=await r.json()}catch(e){}if(!r.ok)throw new Error((j&&j.error)||('HTTP '+r.status));return j}
+const holdIds=()=>Object.keys(S.pos).concat(S.watch);
+function setMeta(t){S.meta[t.id]={chain:t.chain,name:t.name,sym:t.sym,dex:t.dex,pair:t.pair,url:t.url,lp:t.price,lpt:t.pt}}
+function syncMeta(){holdIds().forEach(id=>{const t=T.find(x=>x.id==id);if(t&&t.price!=null&&S.meta[id]){S.meta[id].lp=t.price;S.meta[id].lpt=t.pt}});save()}
+async function refreshFeed(){
+  try{const j=await api('/api/tokens');merge(j.tokens);FEED.chains=j.chains;FEED.at=j.updatedAt;FEED.ok=!j.stale;FEED.err=j.error;syncMeta()}
+  catch(e){FEED.ok=false;FEED.err=e.message==='Failed to fetch'?'Cannot reach the data server':e.message}
+  FEED.loading=false;stat();list();if(OPEN!=null)live()}
+async function refreshPrices(){
+  const ids={},add=t=>{if(t)(ids[t.chain]=ids[t.chain]||new Set()).add(t.id)};
+  holdIds().forEach(id=>add(T.find(x=>x.id==id)));if(OPEN!=null)add(T[OPEN]);
+  for(const c in ids){try{const j=await api(`/api/prices?chain=${c}&ids=${[...ids[c]].join(',')}`);merge(j.tokens)}catch(e){}}
+  syncMeta();list();if(OPEN!=null)live()}
+async function look(){
+  const c=CH=='all'?'solana':CH;
+  try{const j=await api(`/api/token?chain=${c}&address=${encodeURIComponent(Q.trim())}`);merge([j.token]);toast('Found '+j.token.name);list()}
+  catch(e){toast('Lookup failed: '+e.message)}}
+/* real historical candles (GeckoTerminal), shown only when the provider returns them */
+const OH={};
+function chartHtml(t){
+  const o=OH[nk(t.chain,t.pair)];
+  if(!o||o.loading)return '<div class="mu" style="margin:10px 0">Loading price history…</div>';
+  if(o.err)return '<div class="mu" style="margin:10px 0">Price history is unavailable for this pair right now.</div>';
+  const v=o.d.map(x=>x[4]),mn=Math.min(...v),mx=Math.max(...v),R=mx-mn||mx*1e-6||1;
+  return `<svg class="ch" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="Price history"><polyline points="${v.map((y,i)=>`${(i/(v.length-1)*300).toFixed(1)},${(95-(y-mn)/R*90).toFixed(1)}`).join(' ')}" fill="none" stroke="${v[v.length-1]>=v[0]?'var(--up)':'var(--dn)'}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><div class="mu">Real 15-minute candle closes, last ${Math.round(o.d.length/4)}h (GeckoTerminal)</div>`}
+async function loadHist(t){
+  const k=nk(t.chain,t.pair),o=OH[k];if(o&&(o.loading||Date.now()-o.at<60e3))return;
+  OH[k]={loading:true,at:Date.now()};live();
+  try{const j=await api(`/api/ohlcv?chain=${t.chain}&pool=${encodeURIComponent(t.pair)}`);OH[k]={d:j.candles,at:Date.now()}}catch(e){OH[k]={err:1,at:Date.now()}}
+  live()}
+
+S=load();if(!S||typeof S.cash!='number')S=DEF();S.meta=S.meta||{};
+holdIds().forEach(id=>{const m=S.meta[id];if(m)merge([{chain:m.chain,id,name:m.name,sym:m.sym,dex:m.dex,pair:m.pair,url:m.url,price:m.lp,mc:null,fdv:null,liq:null,v:[null,null,null,null],tx:[[0,0],[0,0],[0,0],[0,0]],ch:[null,null,null,null],created:null,src:['saved'],pt:m.lpt}])});
+render();refreshFeed();refreshPrices();
+setInterval(refreshFeed,30000);setInterval(refreshPrices,15000);setInterval(stat,4000);
+setInterval(()=>{S.hist.push({t:Date.now(),v:worth()});if(S.hist.length>200)S.hist.shift();save()},10000);
+</script>
+</body>
+</html>
